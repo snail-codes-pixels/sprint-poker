@@ -103,24 +103,24 @@ const css = `
   .game-sidebar { border-left:2px solid var(--border); overflow-y:auto; display:flex; flex-direction:column; background:var(--cream); }
 
   /* Poker table */
-  .table-wrap { display:flex; flex-direction:column; align-items:center; padding:8px 0 16px; }
-  .table-outer { position:relative; width:min(500px,100%); padding-bottom:50%; }
-  .table-felt { position:absolute; inset:0; background:radial-gradient(ellipse at 38% 38%,var(--felt-shine),var(--felt) 45%,var(--felt2)); border-radius:50%; border:7px solid var(--brown-light); box-shadow:0 0 0 2px var(--brown),0 14px 44px rgba(40,25,10,.28),inset 0 4px 20px rgba(0,0,0,.14); display:flex; align-items:center; justify-content:center; overflow:visible; }
-  .table-inner { display:flex; flex-direction:column; align-items:center; gap:6px; padding:10px; max-width:160px; text-align:center; }
+  .table-wrap { display:flex; flex-direction:column; align-items:center; padding:4px 0 8px; }
+  .table-outer { position:relative; width:min(340px,100%); padding-bottom:34%; }
+  .table-felt { position:absolute; inset:0; background:radial-gradient(ellipse at 38% 38%,var(--felt-shine),var(--felt) 45%,var(--felt2)); border-radius:50%; border:5px solid var(--brown-light); box-shadow:0 0 0 2px var(--brown),0 10px 32px rgba(40,25,10,.28),inset 0 3px 14px rgba(0,0,0,.14); display:flex; align-items:center; justify-content:center; overflow:visible; }
+  .table-inner { display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px; max-width:120px; text-align:center; }
   .table-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:rgba(255,255,255,.5); }
   .table-story { font-family:var(--display); font-size:13px; font-weight:600; color:rgba(255,255,255,.9); line-height:1.3; }
   .phase-dot { width:9px; height:9px; border-radius:50%; background:var(--accent2); box-shadow:0 0 8px var(--accent2); animation:blink 1.4s ease infinite; }
   .phase-dot.done { background:#fff; box-shadow:0 0 8px #fff; animation:none; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.45} }
   .seat { position:absolute; display:flex; flex-direction:column; align-items:center; gap:3px; transform:translate(-50%,-50%); }
-  .seat-card { width:28px; height:40px; border-radius:5px; border:2px dashed rgba(255,255,255,.28); display:flex; align-items:center; justify-content:center; font-size:11px; color:rgba(255,255,255,.35); font-weight:700; background:rgba(0,0,0,.06); }
-  .seat-card.has-vote { background:rgba(255,255,255,.88); border:2px solid rgba(255,255,255,.7); box-shadow:0 2px 8px rgba(0,0,0,.18); animation:cardPop .28s cubic-bezier(.34,1.56,.64,1); color:var(--text); font-size:13px; font-weight:800; font-family:var(--display); }
+  .seat-card { width:20px; height:28px; border-radius:4px; border:2px dashed rgba(255,255,255,.28); display:flex; align-items:center; justify-content:center; font-size:9px; color:rgba(255,255,255,.35); font-weight:700; background:rgba(0,0,0,.06); }
+  .seat-card.has-vote { background:rgba(255,255,255,.88); border:2px solid rgba(255,255,255,.7); box-shadow:0 2px 8px rgba(0,0,0,.18); animation:cardPop .28s cubic-bezier(.34,1.56,.64,1); color:var(--text); font-size:11px; font-weight:800; font-family:var(--display); }
   @keyframes cardPop { from{transform:scale(.6) rotate(-8deg);opacity:0} to{transform:scale(1);opacity:1} }
-  .seat-avatar { width:50px; height:50px; border-radius:50%; background:#fff; border:3px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 3px 12px var(--shadow); position:relative; }
-  .seat-avatar.voted-a { border-color:var(--felt); box-shadow:0 0 0 3px rgba(61,122,92,.25),0 3px 10px var(--shadow); }
-  .seat-avatar.is-host { border-color:var(--accent2); box-shadow:0 0 0 3px rgba(240,168,48,.28),0 3px 10px var(--shadow); }
-  .check-badge { position:absolute; bottom:-3px; right:-3px; width:17px; height:17px; border-radius:50%; background:var(--felt); color:#fff; font-size:9px; font-weight:900; display:flex; align-items:center; justify-content:center; border:2px solid #fff; }
-  .seat-name { font-size:10px; font-weight:800; color:var(--text); background:#fff; padding:2px 7px; border-radius:10px; border:1.5px solid var(--border); white-space:nowrap; max-width:72px; overflow:hidden; text-overflow:ellipsis; }
+  .seat-avatar { width:36px; height:36px; border-radius:50%; background:#fff; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 2px 8px var(--shadow); position:relative; }
+  .seat-avatar.voted-a { border-color:var(--felt); box-shadow:0 0 0 2px rgba(61,122,92,.25),0 2px 8px var(--shadow); }
+  .seat-avatar.is-host { border-color:var(--accent2); box-shadow:0 0 0 2px rgba(240,168,48,.28),0 2px 8px var(--shadow); }
+  .check-badge { position:absolute; bottom:-2px; right:-2px; width:13px; height:13px; border-radius:50%; background:var(--felt); color:#fff; font-size:7px; font-weight:900; display:flex; align-items:center; justify-content:center; border:1.5px solid #fff; }
+  .seat-name { font-size:9px; font-weight:800; color:var(--text); background:#fff; padding:1px 5px; border-radius:8px; border:1.5px solid var(--border); white-space:nowrap; max-width:58px; overflow:hidden; text-overflow:ellipsis; }
   .seat-me .seat-name { background:#e8f5ee; border-color:#b8dcc8; }
   .seat-away { opacity:.55; filter:grayscale(.5); }
 
@@ -203,7 +203,7 @@ const css = `
   @media(max-width:700px) {
     .game-layout { grid-template-columns:1fr; grid-template-rows:1fr auto; }
     .game-sidebar { border-left:none; border-top:2px solid var(--border); max-height:240px; }
-    .table-outer { padding-bottom:60%; }
+    .table-outer { padding-bottom:44%; }
     .stats-row { grid-template-columns:repeat(2,1fr); }
     .pcard { width:52px; height:74px; font-size:18px; }
   }
