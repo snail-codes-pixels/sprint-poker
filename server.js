@@ -13,6 +13,17 @@ app.use(express.static(path.join(__dirname, 'client/dist')));
 
 const rooms = {};
 
+// Room TTL: expire rooms after 4 hours of inactivity
+const ROOM_TTL_MS = 4 * 60 * 60 * 1000;
+setInterval(() => {
+  const now = Date.now();
+  for (const code of Object.keys(rooms)) {
+    if (now - rooms[code].lastActivity > ROOM_TTL_MS) {
+      delete rooms[code];
+    }
+  }
+}, 15 * 60 * 1000); // check every 15 min
+
 const SCALES = {
   fibonacci: ['0', '1', '2', '3', '5', '8', '13', '20', '40', '100', '?', '☕'],
   tshirt: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '?', '☕']
@@ -28,17 +39,11 @@ function generateCode() {
 function computeStats(votes) {
   const allVotes = Object.values(votes).filter(Boolean);
   if (!allVotes.length) return null;
-
   const NUMERIC_MAP = { XS:1, S:2, M:3, L:5, XL:8, XXL:13 };
-  const numeric = allVotes
-    .map(v => NUMERIC_MAP[v] ?? parseFloat(v))
-    .filter(v => !isNaN(v));
-
+  const numeric = allVotes.map(v => NUMERIC_MAP[v] ?? parseFloat(v)).filter(v => !isNaN(v));
   const distribution = {};
   allVotes.forEach(v => { distribution[v] = (distribution[v] || 0) + 1; });
-
   if (!numeric.length) return { distribution, avg: null, median: null, min: null, max: null, agreement: 'N/A', consensus: false };
-
   const sorted = [...numeric].sort((a, b) => a - b);
   const avg = Math.round((sorted.reduce((a,b)=>a+b,0) / sorted.length) * 10) / 10;
   const mid = Math.floor(sorted.length / 2);
@@ -46,16 +51,14 @@ function computeStats(votes) {
   const min = sorted[0], max = sorted[sorted.length - 1];
   const unique = [...new Set(numeric)];
   const agreement = unique.length === 1 ? 'High' : (max - min <= 2 ? 'Medium' : 'Low');
-
   return { distribution, avg, median, min, max, agreement, consensus: unique.length === 1 };
 }
 
 function sanitizeRoom(room) {
+  room.lastActivity = Date.now();
   const currentStory = room.stories[room.currentStoryIndex];
   return {
-    id: room.id,
-    code: room.code,
-    scale: room.scale,
+    id: room.id, code: room.code, scale: room.scale,
     scaleValues: SCALES[room.scale],
     stories: room.stories.map((s, i) => ({
       ...s,
@@ -76,13 +79,12 @@ function sanitizeRoom(room) {
 app.post('/api/rooms', (req, res) => {
   const { hostName, scale = 'fibonacci', stories = [] } = req.body;
   if (!hostName) return res.status(400).json({ error: 'hostName required' });
-
   const id = uuidv4(), code = generateCode(), hostToken = uuidv4(), hostId = uuidv4();
   rooms[code] = {
-    id, code, hostToken, scale,
+    id, code, hostToken, scale, lastActivity: Date.now(),
     stories: stories.map(s => ({ id: uuidv4(), title: s.title||'Untitled', storyId: s.storyId||'', link: s.link||'', finalPoint: null, votes: {} })),
     currentStoryIndex: 0, phase: 'waiting',
-    players: { [hostId]: { id: hostId, name: hostName, avatar: req.body.hostAvatar||"🐱", socketId: null, isHost: true, connected: false } }
+    players: { [hostId]: { id: hostId, name: hostName, avatar: req.body.hostAvatar||'🐱', socketId: null, isHost: true, connected: false } }
   };
   res.json({ roomCode: code, playerId: hostId, hostToken });
 });
@@ -94,7 +96,7 @@ app.post('/api/rooms/:code/join', (req, res) => {
   const { playerName, playerId: existing } = req.body;
   if (existing && room.players[existing]) return res.json({ roomCode: room.code, playerId: existing });
   const playerId = uuidv4();
-  room.players[playerId] = { id: playerId, name: playerName||"Anonymous", avatar: req.body.playerAvatar||"🐶", socketId: null, isHost: false, connected: false };
+  room.players[playerId] = { id: playerId, name: playerName||'Anonymous', avatar: req.body.playerAvatar||'🐶', socketId: null, isHost: false, connected: false };
   res.json({ roomCode: room.code, playerId });
 });
 
