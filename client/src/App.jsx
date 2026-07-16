@@ -174,6 +174,8 @@ const css = `
 
   /* Cards */
   .cards-panel { background:var(--panel); border:2px solid var(--border); border-radius:20px; padding:20px; box-shadow:0 2px 12px var(--shadow); transition:background .3s; }
+  .voting-layout { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+  .guide-inline { background:var(--panel); border:2px solid var(--border); border-radius:20px; padding:20px; box-shadow:0 2px 12px var(--shadow); transition:background .3s; }
   .cards-grid { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
   .pcard { width:60px; height:86px; border-radius:13px; border:2.5px solid var(--border); background:var(--card-bg); display:flex; align-items:center; justify-content:center; font-family:var(--display); font-size:22px; font-weight:600; cursor:pointer; transition:all .15s cubic-bezier(.34,1.56,.64,1); position:relative; user-select:none; color:var(--text); box-shadow:0 2px 8px var(--shadow); }
   .pcard:hover { border-color:var(--felt); transform:translateY(-7px) rotate(-2deg); box-shadow:0 10px 22px rgba(61,122,92,.2); }
@@ -248,6 +250,7 @@ const css = `
     .table-outer { padding-bottom:44%; }
     .stats-row { grid-template-columns:repeat(2,1fr); }
     .pcard { width:52px; height:74px; font-size:18px; }
+    .voting-layout { grid-template-columns:1fr; }
   }
   ::-webkit-scrollbar { width:5px; }
   ::-webkit-scrollbar-track { background:transparent; }
@@ -484,7 +487,6 @@ function HomePage({onEnterRoom,darkMode,toggleDark}){
             <textarea className="input" placeholder={'Fix nav bug\n[UX-142] Onboarding redesign\n[UX-150] Dark mode https://jira/UX-150'} value={storyText} onChange={e=>setStoryText(e.target.value)}/>
             <div className="hint">Format: [ID] Title https://link — all optional except title</div>
           </div>
-          <PointGuide/>
           <button className="btn btn-primary btn-lg" onClick={handleCreate} disabled={loading}>{loading?'Creating…':'🚀 Create Session'}</button>
         </>):(<>
           <div className="field">
@@ -499,7 +501,6 @@ function HomePage({onEnterRoom,darkMode,toggleDark}){
             <label>Room code</label>
             <input className="input input-code" placeholder="ABC123" value={joinCode} onChange={e=>setJoinCode(e.target.value.toUpperCase())} maxLength={6} onKeyDown={e=>e.key==='Enter'&&handleJoin()}/>
           </div>
-          <PointGuide/>
           <button className="btn btn-primary btn-lg" onClick={handleJoin} disabled={loading}>{loading?'Joining…':'Join Session 🎉'}</button>
         </>)}
       </div>
@@ -624,10 +625,26 @@ function GameRoom({roomCode,playerId,hostToken,myAvatar,darkMode,toggleDark}){
         )}
 
         {room.phase==='voting'&&current&&(
-          <div className="cards-panel fade-in">
-            <div className="sec-lbl">Your vote</div>
-            <div className="cards-grid">
-              {scv.map(v=><div key={v} className={`pcard ${myVote===v?'sel':''}`} onClick={()=>castVote(v)}>{v}</div>)}
+          <div className="voting-layout fade-in">
+            <div className="guide-inline">
+              <div className="sec-lbl">Point reference</div>
+              <table className="guide-table">
+                <thead><tr>
+                  <th>Pts</th><th>Effort</th><th>Time</th><th>Risk</th>
+                </tr></thead>
+                <tbody>{POINT_GUIDE.map(r=>(
+                  <tr key={r.pts} style={{background:r.bg}}>
+                    <td><span className="guide-pts">{r.pts}</span></td>
+                    <td>{r.effort}</td><td>{r.time}</td><td>{r.risk}</td>
+                  </tr>
+                ))}</tbody>
+              </table>
+            </div>
+            <div className="cards-panel">
+              <div className="sec-lbl">Your vote</div>
+              <div className="cards-grid">
+                {scv.map(v=><div key={v} className={`pcard ${myVote===v?'sel':''}`} onClick={()=>castVote(v)}>{v}</div>)}
+              </div>
             </div>
           </div>
         )}
