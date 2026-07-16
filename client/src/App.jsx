@@ -191,16 +191,16 @@ const css = `
   .sec-lbl { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; color:var(--brown); margin-bottom:12px; }
 
   /* Cards */
-  .cards-panel { background:var(--panel); border:2px solid var(--border); border-radius:20px; padding:20px; box-shadow:0 2px 12px var(--shadow); transition:background .3s; }
+  .cards-panel { background:var(--panel); border:2px solid var(--border); border-radius:20px; padding:16px 16px 4px; box-shadow:0 2px 12px var(--shadow); transition:background .3s; overflow:visible; }
   .voting-layout { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
   .guide-inline { background:var(--panel); border:2px solid var(--border); border-radius:20px; padding:20px; box-shadow:0 2px 12px var(--shadow); transition:background .3s; }
-  .cards-grid { display:flex; flex-wrap:nowrap; gap:10px; justify-content:center; overflow-x:auto; padding-bottom:6px; }
+  .cards-grid { display:flex; flex-wrap:nowrap; gap:10px; justify-content:center; overflow-x:auto; padding:12px 8px 16px; }
   .pcard { width:108px; height:122px; border-radius:14px; border:2.5px solid var(--border); background:var(--card-bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; transition:all .15s cubic-bezier(.34,1.56,.64,1); position:relative; user-select:none; color:var(--text); box-shadow:0 2px 8px var(--shadow); padding:8px 10px; }
   .pcard-num { font-family:var(--display); font-size:30px; font-weight:700; line-height:1; margin-bottom:3px; }
   .pcard-row { display:flex; align-items:center; gap:3px; width:100%; justify-content:center; }
-  .pcard-icon { font-size:10px; line-height:1; flex-shrink:0; }
-  .pcard-effort { font-size:9px; font-weight:800; color:var(--muted); line-height:1.2; white-space:nowrap; }
-  .pcard-time { font-size:9px; font-weight:600; color:var(--muted); line-height:1.2; white-space:nowrap; }
+  .pcard-icon { font-size:11px; line-height:1; flex-shrink:0; }
+  .pcard-effort { font-size:11px; font-weight:800; color:var(--muted); line-height:1.3; white-space:nowrap; }
+  .pcard-time { font-size:11px; font-weight:600; color:var(--muted); line-height:1.3; white-space:nowrap; }
   .pcard:hover { border-color:var(--felt); transform:translateY(-7px) rotate(-2deg); box-shadow:0 10px 22px rgba(61,122,92,.2); }
   .pcard:hover .pcard-effort, .pcard:hover .pcard-time, .pcard:hover .pcard-icon { color:var(--felt); }
   .pcard.sel { border-color:var(--felt); background:linear-gradient(160deg,#e8f5ee,#d0ede0); color:var(--felt2); transform:translateY(-9px) rotate(-1.5deg); box-shadow:0 10px 26px rgba(61,122,92,.28); }
