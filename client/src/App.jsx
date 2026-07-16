@@ -14,11 +14,29 @@ const store = {
 };
 
 const SCALES = {
-  fibonacci: ['0','1','2','3','5','8','13','20','40','100','?','☕'],
+  fibonacci: ['1','2','3','5','8','13','?','☕'],
   tshirt: ['XS','S','M','L','XL','XXL','?','☕']
 };
 
 const AVATARS = ['🐱','🐶','🦊','🐼','🐨','🐸','🦁','🐯','🐺','🦝','🐮','🐷','🐙','🦋','🐧','🦄','🐻','🐰','🐭','🐹','🦉','🦕','🌈','🦩'];
+
+// Card metadata — emoji + effort + time shown on each voting card
+const CARD_META = {
+  '1':  { emoji:'⚡', effort:'Min effort', time:'Few mins' },
+  '2':  { emoji:'🌱', effort:'Min effort', time:'Few hours' },
+  '3':  { emoji:'🌤', effort:'Mild effort', time:'A day' },
+  '5':  { emoji:'📅', effort:'Moderate', time:'Few days' },
+  '8':  { emoji:'🗓', effort:'Severe', time:'A week' },
+  '13': { emoji:'🚀', effort:'Maximum', time:'A month' },
+  '?':  { emoji:'🤔', effort:'Unsure', time:'¯\\_(ツ)_/¯' },
+  '☕': { emoji:'☕', effort:'Need a', time:'break!' },
+  'XS': { emoji:'⚡', effort:'Min effort', time:'Few mins' },
+  'S':  { emoji:'🌱', effort:'Min effort', time:'Few hours' },
+  'M':  { emoji:'📅', effort:'Moderate', time:'Few days' },
+  'L':  { emoji:'🗓', effort:'Severe', time:'A week' },
+  'XL': { emoji:'🚀', effort:'Maximum', time:'A month' },
+  'XXL':{ emoji:'🏔', effort:'Extreme', time:'Months' },
+};
 
 const POINT_GUIDE = [
   { pts:'1', effort:'Minimum effort', time:'A few minutes', complexity:'Little complexity', risk:'None', bg:'#e8f5ee', border:'#b8dcc8' },
@@ -177,10 +195,16 @@ const css = `
   .voting-layout { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
   .guide-inline { background:var(--panel); border:2px solid var(--border); border-radius:20px; padding:20px; box-shadow:0 2px 12px var(--shadow); transition:background .3s; }
   .cards-grid { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
-  .pcard { width:60px; height:86px; border-radius:13px; border:2.5px solid var(--border); background:var(--card-bg); display:flex; align-items:center; justify-content:center; font-family:var(--display); font-size:22px; font-weight:600; cursor:pointer; transition:all .15s cubic-bezier(.34,1.56,.64,1); position:relative; user-select:none; color:var(--text); box-shadow:0 2px 8px var(--shadow); }
+  .pcard { width:72px; height:108px; border-radius:13px; border:2.5px solid var(--border); background:var(--card-bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; transition:all .15s cubic-bezier(.34,1.56,.64,1); position:relative; user-select:none; color:var(--text); box-shadow:0 2px 8px var(--shadow); padding:6px 4px; }
+  .pcard-emoji { font-size:16px; line-height:1; }
+  .pcard-num { font-family:var(--display); font-size:22px; font-weight:700; line-height:1; }
+  .pcard-effort { font-size:8.5px; font-weight:800; color:var(--muted); text-align:center; line-height:1.2; white-space:nowrap; }
+  .pcard-time { font-size:8.5px; font-weight:600; color:var(--muted); text-align:center; line-height:1.2; white-space:nowrap; }
   .pcard:hover { border-color:var(--felt); transform:translateY(-7px) rotate(-2deg); box-shadow:0 10px 22px rgba(61,122,92,.2); }
+  .pcard:hover .pcard-effort, .pcard:hover .pcard-time { color:var(--felt); }
   .pcard.sel { border-color:var(--felt); background:linear-gradient(160deg,#e8f5ee,#d0ede0); color:var(--felt2); transform:translateY(-9px) rotate(-1.5deg); box-shadow:0 10px 26px rgba(61,122,92,.28); }
   body.dark .pcard.sel { background:linear-gradient(160deg,rgba(61,122,92,.3),rgba(46,96,72,.4)); color:#6dd4a0; }
+  .pcard.sel .pcard-effort, .pcard.sel .pcard-time { color:var(--felt); }
   .pcard.sel::after { content:'✓'; position:absolute; top:5px; right:6px; font-size:10px; color:var(--felt); font-weight:900; }
 
   /* Stats */
@@ -249,7 +273,9 @@ const css = `
     .game-sidebar { border-left:none; border-top:2px solid var(--border); max-height:240px; }
     .table-outer { padding-bottom:44%; }
     .stats-row { grid-template-columns:repeat(2,1fr); }
-    .pcard { width:52px; height:74px; font-size:18px; }
+    .pcard { width:62px; height:92px; }
+    .pcard-num { font-size:18px; }
+    .pcard-emoji { font-size:13px; }
     .voting-layout { grid-template-columns:1fr; }
   }
   ::-webkit-scrollbar { width:5px; }
@@ -625,26 +651,20 @@ function GameRoom({roomCode,playerId,hostToken,myAvatar,darkMode,toggleDark}){
         )}
 
         {room.phase==='voting'&&current&&(
-          <div className="voting-layout fade-in">
-            <div className="guide-inline">
-              <div className="sec-lbl">Point reference</div>
-              <table className="guide-table">
-                <thead><tr>
-                  <th>Pts</th><th>Effort</th><th>Time</th><th>Risk</th>
-                </tr></thead>
-                <tbody>{POINT_GUIDE.map(r=>(
-                  <tr key={r.pts} style={{background:r.bg}}>
-                    <td><span className="guide-pts">{r.pts}</span></td>
-                    <td>{r.effort}</td><td>{r.time}</td><td>{r.risk}</td>
-                  </tr>
-                ))}</tbody>
-              </table>
-            </div>
-            <div className="cards-panel">
-              <div className="sec-lbl">Your vote</div>
-              <div className="cards-grid">
-                {scv.map(v=><div key={v} className={`pcard ${myVote===v?'sel':''}`} onClick={()=>castVote(v)}>{v}</div>)}
-              </div>
+          <div className="cards-panel fade-in">
+            <div className="sec-lbl">Your vote</div>
+            <div className="cards-grid">
+              {scv.map(v=>{
+                const meta=CARD_META[v]||{emoji:'',effort:'',time:''};
+                return(
+                  <div key={v} className={`pcard ${myVote===v?'sel':''}`} onClick={()=>castVote(v)}>
+                    <span className="pcard-emoji">{meta.emoji}</span>
+                    <span className="pcard-num">{v}</span>
+                    {meta.effort&&<span className="pcard-effort">{meta.effort}</span>}
+                    {meta.time&&<span className="pcard-time">{meta.time}</span>}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
