@@ -20,22 +20,22 @@ const SCALES = {
 
 const AVATARS = ['🐱','🐶','🦊','🐼','🐨','🐸','🦁','🐯','🐺','🦝','🐮','🐷','🐙','🦋','🐧','🦄','🐻','🐰','🐭','🐹','🦉','🦕','🌈','🦩'];
 
-// Card metadata — emoji + effort + time shown on each voting card
+// Card metadata — icon + effort + time shown below the number
 const CARD_META = {
-  '1':  { emoji:'⚡', effort:'Min effort', time:'Few mins' },
-  '2':  { emoji:'🌱', effort:'Min effort', time:'Few hours' },
-  '3':  { emoji:'🌤', effort:'Mild effort', time:'A day' },
-  '5':  { emoji:'📅', effort:'Moderate', time:'Few days' },
-  '8':  { emoji:'🗓', effort:'Severe', time:'A week' },
-  '13': { emoji:'🚀', effort:'Maximum', time:'A month' },
-  '?':  { emoji:'🤔', effort:'Unsure', time:'¯\\_(ツ)_/¯' },
-  '☕': { emoji:'☕', effort:'Need a', time:'break!' },
-  'XS': { emoji:'⚡', effort:'Min effort', time:'Few mins' },
-  'S':  { emoji:'🌱', effort:'Min effort', time:'Few hours' },
-  'M':  { emoji:'📅', effort:'Moderate', time:'Few days' },
-  'L':  { emoji:'🗓', effort:'Severe', time:'A week' },
-  'XL': { emoji:'🚀', effort:'Maximum', time:'A month' },
-  'XXL':{ emoji:'🏔', effort:'Extreme', time:'Months' },
+  '1':  { effortIcon:'⚡', effort:'Min effort', timeIcon:'🕐', time:'Few mins' },
+  '2':  { effortIcon:'⚡', effort:'Min effort', timeIcon:'🕐', time:'Few hours' },
+  '3':  { effortIcon:'💪', effort:'Mild effort', timeIcon:'📆', time:'A day' },
+  '5':  { effortIcon:'💪', effort:'Moderate',    timeIcon:'📆', time:'Few days' },
+  '8':  { effortIcon:'🔥', effort:'Severe',      timeIcon:'🗓', time:'A week' },
+  '13': { effortIcon:'🔥', effort:'Maximum',     timeIcon:'🗓', time:'A month' },
+  '?':  { effortIcon:'🤔', effort:'Unsure',      timeIcon:'',   time:'' },
+  '☕': { effortIcon:'',   effort:'Take a',      timeIcon:'',   time:'break!' },
+  'XS': { effortIcon:'⚡', effort:'Min effort', timeIcon:'🕐', time:'Few mins' },
+  'S':  { effortIcon:'⚡', effort:'Min effort', timeIcon:'🕐', time:'Few hours' },
+  'M':  { effortIcon:'💪', effort:'Moderate',   timeIcon:'📆', time:'Few days' },
+  'L':  { effortIcon:'🔥', effort:'Severe',     timeIcon:'🗓', time:'A week' },
+  'XL': { effortIcon:'🔥', effort:'Maximum',    timeIcon:'🗓', time:'A month' },
+  'XXL':{ effortIcon:'🔥', effort:'Extreme',    timeIcon:'🗓', time:'Months' },
 };
 
 const POINT_GUIDE = [
@@ -194,17 +194,18 @@ const css = `
   .cards-panel { background:var(--panel); border:2px solid var(--border); border-radius:20px; padding:20px; box-shadow:0 2px 12px var(--shadow); transition:background .3s; }
   .voting-layout { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
   .guide-inline { background:var(--panel); border:2px solid var(--border); border-radius:20px; padding:20px; box-shadow:0 2px 12px var(--shadow); transition:background .3s; }
-  .cards-grid { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
-  .pcard { width:72px; height:108px; border-radius:13px; border:2.5px solid var(--border); background:var(--card-bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; transition:all .15s cubic-bezier(.34,1.56,.64,1); position:relative; user-select:none; color:var(--text); box-shadow:0 2px 8px var(--shadow); padding:6px 4px; }
-  .pcard-emoji { font-size:16px; line-height:1; }
-  .pcard-num { font-family:var(--display); font-size:22px; font-weight:700; line-height:1; }
-  .pcard-effort { font-size:8.5px; font-weight:800; color:var(--muted); text-align:center; line-height:1.2; white-space:nowrap; }
-  .pcard-time { font-size:8.5px; font-weight:600; color:var(--muted); text-align:center; line-height:1.2; white-space:nowrap; }
+  .cards-grid { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; max-width:600px; margin:0 auto; }
+  .pcard { width:86px; height:122px; border-radius:14px; border:2.5px solid var(--border); background:var(--card-bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; transition:all .15s cubic-bezier(.34,1.56,.64,1); position:relative; user-select:none; color:var(--text); box-shadow:0 2px 8px var(--shadow); padding:8px 6px; }
+  .pcard-num { font-family:var(--display); font-size:30px; font-weight:700; line-height:1; margin-bottom:3px; }
+  .pcard-row { display:flex; align-items:center; gap:3px; width:100%; justify-content:center; }
+  .pcard-icon { font-size:10px; line-height:1; flex-shrink:0; }
+  .pcard-effort { font-size:9px; font-weight:800; color:var(--muted); line-height:1.2; white-space:nowrap; }
+  .pcard-time { font-size:9px; font-weight:600; color:var(--muted); line-height:1.2; white-space:nowrap; }
   .pcard:hover { border-color:var(--felt); transform:translateY(-7px) rotate(-2deg); box-shadow:0 10px 22px rgba(61,122,92,.2); }
-  .pcard:hover .pcard-effort, .pcard:hover .pcard-time { color:var(--felt); }
+  .pcard:hover .pcard-effort, .pcard:hover .pcard-time, .pcard:hover .pcard-icon { color:var(--felt); }
   .pcard.sel { border-color:var(--felt); background:linear-gradient(160deg,#e8f5ee,#d0ede0); color:var(--felt2); transform:translateY(-9px) rotate(-1.5deg); box-shadow:0 10px 26px rgba(61,122,92,.28); }
   body.dark .pcard.sel { background:linear-gradient(160deg,rgba(61,122,92,.3),rgba(46,96,72,.4)); color:#6dd4a0; }
-  .pcard.sel .pcard-effort, .pcard.sel .pcard-time { color:var(--felt); }
+  .pcard.sel .pcard-effort, .pcard.sel .pcard-time, .pcard.sel .pcard-icon { color:var(--felt); }
   .pcard.sel::after { content:'✓'; position:absolute; top:5px; right:6px; font-size:10px; color:var(--felt); font-weight:900; }
 
   /* Stats */
@@ -273,9 +274,8 @@ const css = `
     .game-sidebar { border-left:none; border-top:2px solid var(--border); max-height:240px; }
     .table-outer { padding-bottom:44%; }
     .stats-row { grid-template-columns:repeat(2,1fr); }
-    .pcard { width:62px; height:92px; }
-    .pcard-num { font-size:18px; }
-    .pcard-emoji { font-size:13px; }
+    .pcard { width:72px; height:104px; }
+    .pcard-num { font-size:24px; }
     .voting-layout { grid-template-columns:1fr; }
   }
   ::-webkit-scrollbar { width:5px; }
@@ -655,13 +655,22 @@ function GameRoom({roomCode,playerId,hostToken,myAvatar,darkMode,toggleDark}){
             <div className="sec-lbl">Your vote</div>
             <div className="cards-grid">
               {scv.map(v=>{
-                const meta=CARD_META[v]||{emoji:'',effort:'',time:''};
+                const meta=CARD_META[v]||{effortIcon:'',effort:'',timeIcon:'',time:''};
+                const isCoffee=v==='☕';
                 return(
                   <div key={v} className={`pcard ${myVote===v?'sel':''}`} onClick={()=>castVote(v)}>
-                    <span className="pcard-emoji">{meta.emoji}</span>
                     <span className="pcard-num">{v}</span>
-                    {meta.effort&&<span className="pcard-effort">{meta.effort}</span>}
-                    {meta.time&&<span className="pcard-time">{meta.time}</span>}
+                    {meta.effort&&<div className="pcard-row">
+                      {meta.effortIcon&&<span className="pcard-icon">{meta.effortIcon}</span>}
+                      <span className="pcard-effort">{meta.effort}</span>
+                    </div>}
+                    {!isCoffee&&meta.time&&<div className="pcard-row">
+                      {meta.timeIcon&&<span className="pcard-icon">{meta.timeIcon}</span>}
+                      <span className="pcard-time">{meta.time}</span>
+                    </div>}
+                    {isCoffee&&<div className="pcard-row">
+                      <span className="pcard-time">break!</span>
+                    </div>}
                   </div>
                 );
               })}
