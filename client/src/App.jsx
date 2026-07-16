@@ -194,8 +194,8 @@ const css = `
   .cards-panel { background:var(--panel); border:2px solid var(--border); border-radius:20px; padding:20px; box-shadow:0 2px 12px var(--shadow); transition:background .3s; }
   .voting-layout { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
   .guide-inline { background:var(--panel); border:2px solid var(--border); border-radius:20px; padding:20px; box-shadow:0 2px 12px var(--shadow); transition:background .3s; }
-  .cards-grid { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; max-width:600px; margin:0 auto; }
-  .pcard { width:86px; height:122px; border-radius:14px; border:2.5px solid var(--border); background:var(--card-bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; transition:all .15s cubic-bezier(.34,1.56,.64,1); position:relative; user-select:none; color:var(--text); box-shadow:0 2px 8px var(--shadow); padding:8px 6px; }
+  .cards-grid { display:flex; flex-wrap:nowrap; gap:10px; justify-content:center; overflow-x:auto; padding-bottom:6px; }
+  .pcard { width:108px; height:122px; border-radius:14px; border:2.5px solid var(--border); background:var(--card-bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; transition:all .15s cubic-bezier(.34,1.56,.64,1); position:relative; user-select:none; color:var(--text); box-shadow:0 2px 8px var(--shadow); padding:8px 10px; }
   .pcard-num { font-family:var(--display); font-size:30px; font-weight:700; line-height:1; margin-bottom:3px; }
   .pcard-row { display:flex; align-items:center; gap:3px; width:100%; justify-content:center; }
   .pcard-icon { font-size:10px; line-height:1; flex-shrink:0; }
@@ -274,7 +274,7 @@ const css = `
     .game-sidebar { border-left:none; border-top:2px solid var(--border); max-height:240px; }
     .table-outer { padding-bottom:44%; }
     .stats-row { grid-template-columns:repeat(2,1fr); }
-    .pcard { width:72px; height:104px; }
+    .pcard { width:88px; height:104px; }
     .pcard-num { font-size:24px; }
     .voting-layout { grid-template-columns:1fr; }
   }
